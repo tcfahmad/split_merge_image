@@ -47,19 +47,33 @@ namespace SplitAndMergeImages
                 throw new ArgumentException("Split count should be greater than 15");
             }
 
-            //Create the directory to output the split images
-            Directory.CreateDirectory(@"C:\Split&MergerOutput\SplitImages\");
-            string SplitOutputPath = @"C:\Split&MergerOutput\SplitImages\";
+            else if (splitCount > originalImage.Width)
+                Console.WriteLine("Invalid number. Currently splitting image to no. of images > width of original image is not supported.\n The functionality is on its way. Keep in touch :)");
 
-            //Call to Split() function to split original image into n images
-            Split(SplitOutputPath, originalImage, splitCount);
-            originalImage.Dispose();
+            else
+            {
+                //Create the directory to output the split images
+                string SplitOutputPath = @"C:\Split&MergeOutput\SplitImages\";
+                Directory.CreateDirectory(SplitOutputPath);
 
-            Console.WriteLine("Enter 1 to Merge split images");
-            if (Console.ReadLine() == "1")
-                Merge(SplitOutputPath); //Call to merge all the split images back to form the original image
+                //Delete files already present in the path
+                DirectoryInfo di = new DirectoryInfo(SplitOutputPath);
+                foreach (FileInfo file in di.GetFiles("*.jpg"))
+                {
+                    file.Delete();
+                }
 
-            Console.WriteLine("Processing Complete. Thanks for using the Service");
+                //Call Split() function to split original image into n images
+                Split(SplitOutputPath, originalImage, splitCount);
+                originalImage.Dispose();
+
+                Console.WriteLine("\nPlease enter 1 to Merge split images");
+                if (Console.ReadLine() == "1")
+                    Merge(SplitOutputPath); //Call to merge all the split images back to form the original image
+            }
+
+            Console.WriteLine("\nProcessing Complete. Thanks for using the Service\n");
+
         }
 
         //Split image into n images
@@ -71,10 +85,10 @@ namespace SplitAndMergeImages
             int i = 0, f = 1;
             try
             {
-                while (i + LeftOverImageWidth < originalImage.Width)
+                while (i < originalImage.Width)
                 {
-                    if (i + LeftOverImageWidth == originalImage.Width)
-                        i += LeftOverImageWidth;
+                    if ((i<= LeftOverImageWidth && (i + LeftOverImageWidth == originalImage.Width)) || ((i > LeftOverImageWidth) && (i+ SplitImagesWidth + LeftOverImageWidth == originalImage.Width)))
+                      SplitImagesWidth += LeftOverImageWidth;
 
                     Rectangle rect = new Rectangle(i, 0, SplitImagesWidth, originalImage.Height);
                     Bitmap SplitImage = originalImage.Clone(rect, originalImage.PixelFormat);
@@ -88,20 +102,18 @@ namespace SplitAndMergeImages
             }
             catch (Exception)
             {
-
                 throw new Exception("Oops! Something went wrong while splitting the image.");
             }
 
-
-            Console.WriteLine("Split successful. Split Images are available at following path:\n" + splitOutputPath);
+            Console.WriteLine("\nSplit successful. Split Images are available at following path:\n" + splitOutputPath);
         }
 
         //Merge images back to original image
         public static void Merge(string SplitOutputPath)
         {
             //Create the directory to output the Merged image
-            Directory.CreateDirectory(@"C:\Split&MergerOutput\MergedImage\");
-            string MergeOutputPath = @"C:\Split&MergerOutput\MergedImage\";
+            string MergeOutputPath = @"C:\Split&MergeOutput\MergedImage\";
+            Directory.CreateDirectory(MergeOutputPath);
 
             //Get file info and sort as per creation time to work around the issue because of numeric sorting in string.
             DirectoryInfo di = new DirectoryInfo(SplitOutputPath);
@@ -132,18 +144,15 @@ namespace SplitAndMergeImages
                     int previousWidth = 0;
                     foreach (var image in imageList)
                     {
-
                         g.DrawImage(image, previousWidth, 0);
-
                         previousWidth += image.Width;
-                        //g.DrawImage(secondHalf, firstHalf.Width, 0);
                     }
                 }
 
                 bitmap.Save(string.Format("{0}ReMerged.jpg", MergeOutputPath), ImageFormat.Jpeg);
             }
 
-                Console.WriteLine("Image ReMerged. Please find the image at following Path\n" + MergeOutputPath + "ReMerged.jpg");
-            }
+            Console.WriteLine("\nImages ReMerged. Please find the merged image at following Path\n" + MergeOutputPath + "ReMerged.jpg");
+        }
     }
 }
