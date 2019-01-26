@@ -1,0 +1,30 @@
+
+DESCRIPTION:
+SplitAndMergeImages is a Console Apllication which splits an image in n(>15) number of images and then merges them back together to form the original image.
+
+
+
+ASSUMPTIONS:
+1) Only dividing along the width will suffice. This restricts the splitCount to max of width of image. (Please revert if complete n x m split is required)
+2) We are only dealing with .jpg format as of now just to streamline the process. Methods can be extended to cover other formats too.
+3) Since we cannot always have split images of equal dimensions, the split method adds the left over part of the image to the last image if splitCOunt is not a factor of the width of original image.
+
+
+
+
+INPUTS:
+URL: The url of the original image. If this is not provided, URL will default to "https://images.pexels.com/photos/226589/pexels-photo-226589.jpeg"
+
+splitCOunt: count in which the original image need to be divided(0 to <= image.width)
+
+User has an option to select whether to go for remerge or not once the split is complete by giving 1 as an input to remerge and any other character to complete
+
+
+
+
+OUTPUTS:
+The Split Images are placed at following path:
+C:\Split&MergeOutput\SplitImages
+
+The ReMerged image is placed at following path:
+C:\Split&MergeOutput\MergedImage
