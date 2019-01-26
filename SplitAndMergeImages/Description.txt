@@ -1,7 +1,7 @@
 
 DESCRIPTION:
 SplitAndMergeImages is a Console Apllication which splits an image in n(>15) number of images and then merges them back together to form the original image.
-
+TargetFramework- .Net FrameWork 4.7.2
 
 
 ASSUMPTIONS:
